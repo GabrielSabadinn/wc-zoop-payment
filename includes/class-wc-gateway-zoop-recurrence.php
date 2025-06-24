@@ -99,6 +99,12 @@ class WC_Gateway_Zoop_Recurrence extends WC_Payment_Gateway {
                 margin-bottom: 5px;
                 font-weight: bold;
             }
+            .error-message {
+                color: red;
+                font-size: 12px;
+                margin-top: 5px;
+                display: none;
+            }
         </style>
         <script>
             console.log('WC Zoop Recorrência: JavaScript carregado na página de checkout');
@@ -114,6 +120,57 @@ class WC_Gateway_Zoop_Recurrence extends WC_Payment_Gateway {
                 const birthdate = $('#birthdate_recurrence');
                 const dueDate = $('#due_date_recurrence');
                 const expirationDate = $('#expiration_date_recurrence');
+                const planName = $('#plan_name_recurrence');
+
+                // Função para validar CPF
+                function validateCPF(value) {
+                    value = value.replace(/\D/g, '');
+                    if (value.length !== 11) return false;
+                    let sum = 0;
+                    let rest;
+                    for (let i = 1; i <= 9; i++) sum += parseInt(value.charAt(i-1)) * (11 - i);
+                    rest = (sum * 10) % 11;
+                    if ((rest === 10) || (rest === 11)) rest = 0;
+                    if (rest !== parseInt(value.charAt(9))) return false;
+                    sum = 0;
+                    for (let i = 1; i <= 10; i++) sum += parseInt(value.charAt(i-1)) * (12 - i);
+                    rest = (sum * 10) % 11;
+                    if ((rest === 10) || (rest === 11)) rest = 0;
+                    if (rest !== parseInt(value.charAt(10))) return false;
+                    return true;
+                }
+
+                // Função para validar data no formato DD/MM/AAAA
+                function validateDate(value) {
+                    const regex = /^(\d{2})\/(\d{2})\/(\d{4})$/;
+                    if (!regex.test(value)) return false;
+                    const [, day, month, year] = value.match(regex);
+                    const date = new Date(year, month - 1, day);
+                    return date.getDate() == day && date.getMonth() == month - 1 && date.getFullYear() == year;
+                }
+
+                // Função para validar data/hora no formato DD/MM/AAAA HH:MM
+                function validateDateTime(value) {
+                    const regex = /^(\d{2})\/(\d{2})\/(\d{4})\s(\d{2}):(\d{2})$/;
+                    if (!regex.test(value)) return false;
+                    const [, day, month, year, hour, minute] = value.match(regex);
+                    const date = new Date(year, month - 1, day);
+                    return date.getDate() == day && date.getMonth() == month - 1 && date.getFullYear() == year && hour <= 23 && minute <= 59;
+                }
+
+                // Adicionar mensagens de erro
+                function addErrorMessage(input, message) {
+                    let error = input.next('.error-message');
+                    if (!error.length) {
+                        error = $('<div class="error-message"></div>').insertAfter(input);
+                    }
+                    error.text(message).show();
+                }
+
+                function clearErrorMessage(input) {
+                    const error = input.next('.error-message');
+                    if (error.length) error.hide();
+                }
 
                 if (cardNumber.length) {
                     console.log('WC Zoop Recorrência: Campo de número do cartão encontrado');
@@ -158,9 +215,15 @@ class WC_Gateway_Zoop_Recurrence extends WC_Payment_Gateway {
                 });
 
                 cpf.on('input', function() {
+                    clearErrorMessage($(this));
                     let value = $(this).val().replace(/\D/g, '');
                     if (value.length > 11) value = value.slice(0, 11);
-                    value = value.replace(/(\d{3})(\d{3})(\d{3})(\d{2})/, '$1.$2.$3-$4');
+                    if (value.length === 11) {
+                        value = value.replace(/(\d{3})(\d{3})(\d{3})(\d{2})/, '$1.$2.$3-$4');
+                        if (!validateCPF(value)) {
+                            addErrorMessage($(this), 'CPF inválido');
+                        }
+                    }
                     $(this).val(value);
                     console.log('WC Zoop Recorrência: Entrada do CPF: ' + value);
                 });
@@ -168,33 +231,91 @@ class WC_Gateway_Zoop_Recurrence extends WC_Payment_Gateway {
                 phone.on('input', function() {
                     let value = $(this).val().replace(/\D/g, '');
                     if (value.length > 11) value = value.slice(0, 11);
-                    value = value.replace(/(\d{2})(\d{5})(\d{4})/, '($1) $2-$3');
+                    if (value.length >= 10) {
+                        value = value.replace(/(\d{2})(\d{4,5})(\d{4})/, '($1) $2-$3');
+                    }
                     $(this).val(value);
                     console.log('WC Zoop Recorrência: Entrada do telefone: ' + value);
                 });
 
                 birthdate.on('input', function() {
+                    clearErrorMessage($(this));
                     let value = $(this).val().replace(/\D/g, '');
                     if (value.length > 8) value = value.slice(0, 8);
-                    value = value.replace(/(\d{2})(\d{2})(\d{4})/, '$1/$2/$3');
+                    if (value.length === 8) {
+                        value = value.replace(/(\d{2})(\d{2})(\d{4})/, '$1/$2/$3');
+                        if (!validateDate(value)) {
+                            addErrorMessage($(this), 'Data de nascimento inválida');
+                        }
+                    }
                     $(this).val(value);
                     console.log('WC Zoop Recorrência: Entrada da data de nascimento: ' + value);
                 });
 
                 dueDate.on('input', function() {
+                    clearErrorMessage($(this));
                     let value = $(this).val().replace(/\D/g, '');
                     if (value.length > 8) value = value.slice(0, 8);
-                    value = value.replace(/(\d{2})(\d{2})(\d{4})/, '$1/$2/$3');
+                    if (value.length === 8) {
+                        value = value.replace(/(\d{2})(\d{2})(\d{4})/, '$1/$2/$3');
+                        if (!validateDate(value)) {
+                            addErrorMessage($(this), 'Data de vencimento inválida');
+                        }
+                    }
                     $(this).val(value);
                     console.log('WC Zoop Recorrência: Entrada da data de vencimento: ' + value);
                 });
 
                 expirationDate.on('input', function() {
+                    clearErrorMessage($(this));
                     let value = $(this).val().replace(/\D/g, '');
                     if (value.length > 12) value = value.slice(0, 12);
-                    value = value.replace(/(\d{2})(\d{2})(\d{4})(\d{2})(\d{2})/, '$1/$2/$3 $4:$5');
+                    if (value.length === 12) {
+                        value = value.replace(/(\d{2})(\d{2})(\d{4})(\d{2})(\d{2})/, '$1/$2/$3 $4:$5');
+                        if (!validateDateTime(value)) {
+                            addErrorMessage($(this), 'Data de expiração inválida');
+                        }
+                    }
                     $(this).val(value);
                     console.log('WC Zoop Recorrência: Entrada da data de expiração: ' + value);
+                });
+
+                planName.on('input', function() {
+                    clearErrorMessage($(this));
+                    let value = $(this).val();
+                    if (value.length < 3) {
+                        addErrorMessage($(this), 'O nome do plano deve ter pelo menos 3 caracteres');
+                    }
+                    console.log('WC Zoop Recorrência: Entrada do nome do plano: ' + value);
+                });
+
+                // Validação no envio do formulário
+                $('#zoop-recurrence-form').closest('form').on('submit', function(e) {
+                    let hasErrors = false;
+                    if (cpf.val().replace(/\D/g, '').length !== 11 || !validateCPF(cpf.val())) {
+                        addErrorMessage(cpf, 'Por favor, insira um CPF válido (11 dígitos)');
+                        hasErrors = true;
+                    }
+                    if (!validateDate(birthdate.val())) {
+                        addErrorMessage(birthdate, 'Por favor, insira uma data de nascimento válida (DD/MM/AAAA)');
+                        hasErrors = true;
+                    }
+                    if (!validateDate(dueDate.val())) {
+                        addErrorMessage(dueDate, 'Por favor, insira uma data de vencimento válida (DD/MM/AAAA)');
+                        hasErrors = true;
+                    }
+                    if (!validateDateTime(expirationDate.val())) {
+                        addErrorMessage(expirationDate, 'Por favor, insira uma data de expiração válida (DD/MM/AAAA HH:MM)');
+                        hasErrors = true;
+                    }
+                    if (planName.val().length < 3) {
+                        addErrorMessage(planName, 'Por favor, insira um nome de plano com pelo menos 3 caracteres');
+                        hasErrors = true;
+                    }
+                    if (hasErrors) {
+                        e.preventDefault();
+                        console.log('WC Zoop Recorrência: Erros de validação detectados, bloqueando envio do formulário');
+                    }
                 });
 
                 console.log('WC Zoop Recorrência: Adicionando campos ocultos de dispositivo');
@@ -350,6 +471,10 @@ class WC_Gateway_Zoop_Recurrence extends WC_Payment_Gateway {
             </div>
             <h4><?php _e('Plano de Recorrência', 'wc-zoop-payments'); ?></h4>
             <div class="form-row">
+                <label for="plan_name_recurrence"><?php _e('Nome do Plano', 'wc-zoop-payments'); ?> <span class="required">*</span></label>
+                <input type="text" id="plan_name_recurrence" name="plan_name_recurrence" placeholder="Plano de Assinatura" required>
+            </div>
+            <div class="form-row">
                 <label for="due_date_recurrence"><?php _e('Data de Vencimento', 'wc-zoop-payments'); ?> <span class="required">*</span></label>
                 <input type="text" id="due_date_recurrence" name="due_date_recurrence" placeholder="DD/MM/AAAA" maxlength="10" required>
             </div>
@@ -386,7 +511,7 @@ class WC_Gateway_Zoop_Recurrence extends WC_Payment_Gateway {
         $order = wc_get_order($order_id);
         if (!$order) {
             error_log('WC Zoop Recorrência: Pedido #' . $order_id . ' não encontrado');
-            wc_add_notice(__('Erro: Pedido não encontrado.', 'wc-zoop-payments'), 'error');
+            wc_add_notice(__('Erro ao processar o pagamento: Pedido não encontrado.', 'wc-zoop-payments'), 'error');
             return;
         }
         error_log('WC Zoop Recorrência: Total do pedido: ' . $order->get_total());
@@ -394,11 +519,47 @@ class WC_Gateway_Zoop_Recurrence extends WC_Payment_Gateway {
         // Converter o valor para centavos (Zoop espera valores em centavos)
         $amount_in_cents = floatval($order->get_total()) * 100;
 
+        $due_date = isset($_POST['due_date_recurrence']) ? $this->convert_date_format(sanitize_text_field($_POST['due_date_recurrence'])) : '';
+        $expiration_date = isset($_POST['expiration_date_recurrence']) ? $this->convert_datetime_format(sanitize_text_field($_POST['expiration_date_recurrence'])) : '';
+        $birthdate = isset($_POST['birthdate_recurrence']) ? $this->convert_date_format(sanitize_text_field($_POST['birthdate_recurrence'])) : '';
+        $taxpayer_id = isset($_POST['taxpayer_id_recurrence']) ? str_replace(['.', '-'], '', sanitize_text_field($_POST['taxpayer_id_recurrence'])) : '';
+
+        // Validações no backend
+        if (empty($due_date) || $due_date === $_POST['due_date_recurrence']) {
+            error_log('WC Zoop Recorrência: Erro na formatação da data de vencimento: ' . $_POST['due_date_recurrence']);
+            wc_add_notice(__('Erro ao processar o pagamento: Data de vencimento inválida. Use o formato DD/MM/AAAA.', 'wc-zoop-payments'), 'error');
+            return;
+        }
+
+        if (empty($expiration_date) || $expiration_date === $_POST['expiration_date_recurrence']) {
+            error_log('WC Zoop Recorrência: Erro na formatação da data de expiração: ' . $_POST['expiration_date_recurrence']);
+            wc_add_notice(__('Erro ao processar o pagamento: Data de expiração inválida. Use o formato DD/MM/AAAA HH:MM.', 'wc-zoop-payments'), 'error');
+            return;
+        }
+
+        if (empty($birthdate) || $birthdate === $_POST['birthdate_recurrence']) {
+            error_log('WC Zoop Recorrência: Erro na formatação da data de nascimento: ' . $_POST['birthdate_recurrence']);
+            wc_add_notice(__('Erro ao processar o pagamento: Data de nascimento inválida. Use o formato DD/MM/AAAA.', 'wc-zoop-payments'), 'error');
+            return;
+        }
+
+        if (strlen($taxpayer_id) !== 11 || !preg_match('/^\d{11}$/', $taxpayer_id)) {
+            error_log('WC Zoop Recorrência: CPF inválido: ' . $taxpayer_id);
+            wc_add_notice(__('Erro ao processar o pagamento: CPF inválido. Deve conter 11 dígitos.', 'wc-zoop-payments'), 'error');
+            return;
+        }
+
+        if (!isset($_POST['plan_name_recurrence']) || strlen(sanitize_text_field($_POST['plan_name_recurrence'])) < 3) {
+            error_log('WC Zoop Recorrência: Nome do plano inválido: ' . ($_POST['plan_name_recurrence'] ?? ''));
+            wc_add_notice(__('Erro ao processar o pagamento: Nome do plano inválido. Deve ter pelo menos 3 caracteres.', 'wc-zoop-payments'), 'error');
+            return;
+        }
+
         $payload = [
             'amount' => $amount_in_cents,
             'description' => 'Pagamento recorrente para o pedido #' . $order_id,
-            'due_date' => isset($_POST['due_date_recurrence']) ? $this->convert_date_format(sanitize_text_field($_POST['due_date_recurrence'])) : '',
-            'expiration_date' => isset($_POST['expiration_date_recurrence']) ? $this->convert_datetime_format(sanitize_text_field($_POST['expiration_date_recurrence'])) : '',
+            'due_date' => $due_date,
+            'expiration_date' => $expiration_date,
             'card' => [
                 'holder_name' => isset($_POST['card_holder_name_recurrence']) ? sanitize_text_field($_POST['card_holder_name_recurrence']) : '',
                 'expiration_month' => isset($_POST['card_expiry_month_recurrence']) ? sanitize_text_field($_POST['card_expiry_month_recurrence']) : '',
@@ -421,28 +582,24 @@ class WC_Gateway_Zoop_Recurrence extends WC_Payment_Gateway {
                 'last_name' => isset($_POST['last_name_recurrence']) ? sanitize_text_field($_POST['last_name_recurrence']) : '',
                 'email' => isset($_POST['email_recurrence']) ? sanitize_email($_POST['email_recurrence']) : '',
                 'phone_number' => isset($_POST['phone_number_recurrence']) ? str_replace(['(', ')', '-', ' '], '', sanitize_text_field($_POST['phone_number_recurrence'])) : '',
-                'taxpayer_id' => isset($_POST['taxpayer_id_recurrence']) ? str_replace(['.', '-'], '', sanitize_text_field($_POST['taxpayer_id_recurrence'])) : '',
-                'birthdate' => isset($_POST['birthdate_recurrence']) ? $this->convert_date_format(sanitize_text_field($_POST['birthdate_recurrence'])) : ''
+                'taxpayer_id' => $taxpayer_id,
+                'birthdate' => $birthdate
             ],
             'plan' => [
                 'frequency' => isset($_POST['recurrence_frequency']) ? sanitize_text_field($_POST['recurrence_frequency']) : 'monthly',
                 'interval' => isset($_POST['recurrence_interval']) ? intval($_POST['recurrence_interval']) : 1,
                 'amount' => $amount_in_cents,
-                'setup_amount' => 0,
+                'setup_amount' => 10,
                 'description' => 'Plano de recorrência para o pedido #' . $order_id,
-                'name' => 'Plano Pedido #' . $order_id,
+                'name' => isset($_POST['plan_name_recurrence']) ? sanitize_text_field($_POST['plan_name_recurrence']) : 'Plano de Assinatura',
                 'duration' => isset($_POST['recurrence_duration']) ? intval($_POST['recurrence_duration']) : 12
             ]
         ];
 
         error_log('WC Zoop Recorrência: Enviando payload: ' . json_encode($payload, JSON_PRETTY_PRINT));
-        if (defined('WP_DEBUG') && WP_DEBUG) {
-            wc_add_notice(__('Payload da Requisição API: ', 'wc-zoop-payments') . '<pre>' . esc_html(json_encode($payload, JSON_PRETTY_PRINT)) . '</pre>', 'notice');
-        }
 
-        $marketplace_id = $this->get_option('marketplace_id');
         $api_key = $this->get_option('api_key');
-        $endpoint = "";
+        $endpoint = "http://localhost:9099/api/transactions/recurrent";
 
         $response = wp_remote_post($endpoint, [
             'body' => json_encode($payload),
@@ -458,11 +615,7 @@ class WC_Gateway_Zoop_Recurrence extends WC_Payment_Gateway {
         if (is_wp_error($response)) {
             $error_message = $response->get_error_message();
             error_log('WC Zoop Recorrência: Erro WP na API: ' . $error_message);
-            if (defined('WP_DEBUG') && WP_DEBUG) {
-                wc_add_notice(__('Erro na Resposta da API: ', 'wc-zoop-payments') . esc_html($error_message), 'error');
-            } else {
-                wc_add_notice(__('Erro ao processar o pagamento. Tente novamente.', 'wc-zoop-payments'), 'error');
-            }
+            wc_add_notice(__('Erro ao processar o pagamento: ', 'wc-zoop-payments') . esc_html($error_message), 'error');
             return;
         }
 
@@ -471,18 +624,10 @@ class WC_Gateway_Zoop_Recurrence extends WC_Payment_Gateway {
         error_log('WC Zoop Recorrência: Código de resposta da API: ' . $response_code);
         error_log('WC Zoop Recorrência: Corpo da resposta da API: ' . $response_body);
 
-        if (defined('WP_DEBUG') && WP_DEBUG) {
-            wc_add_notice(__('Resposta da API: ', 'wc-zoop-payments') . '<pre>' . esc_html($response_body) . '</pre>', 'notice');
-        }
-
         $body = json_decode($response_body, true);
         if (json_last_error() !== JSON_ERROR_NONE) {
             error_log('WC Zoop Recorrência: Erro ao decodificar JSON: ' . json_last_error_msg());
-            if (defined('WP_DEBUG') && WP_DEBUG) {
-                wc_add_notice(__('Erro na Resposta da API: JSON inválido. Resposta bruta: ', 'wc-zoop-payments') . esc_html($response_body), 'error');
-            } else {
-                wc_add_notice(__('Erro ao processar o pagamento. Tente novamente.', 'wc-zoop-payments'), 'error');
-            }
+            wc_add_notice(__('Erro ao processar o pagamento: JSON inválido.', 'wc-zoop-payments'), 'error');
             return;
         }
 
@@ -494,16 +639,13 @@ class WC_Gateway_Zoop_Recurrence extends WC_Payment_Gateway {
             WC()->cart->empty_cart();
             return [
                 'result' => 'success',
-                'redirect' => $this->get_return_url($order)
+                'redirect' => $this->get_return_url($order),
+                'message' => 'OK'
             ];
         } else {
             $error_message = isset($body['error']['message']) ? $body['error']['message'] : __('Erro desconhecido', 'wc-zoop-payments');
             error_log('WC Zoop Recorrência: Pagamento recusado: ' . $error_message);
-            if (defined('WP_DEBUG') && WP_DEBUG) {
-                wc_add_notice(__('Erro na Resposta da API: ', 'wc-zoop-payments') . '<pre>' . esc_html(json_encode($body, JSON_PRETTY_PRINT)) . '</pre>', 'error');
-            } else {
-                wc_add_notice(__('Pagamento recusado: ', 'wc-zoop-payments') . esc_html($error_message), 'error');
-            }
+            wc_add_notice(__('Erro ao processar o pagamento: ', 'wc-zoop-payments') . esc_html($error_message), 'error');
             return;
         }
     }
@@ -511,17 +653,39 @@ class WC_Gateway_Zoop_Recurrence extends WC_Payment_Gateway {
     private function convert_date_format($date) {
         // Converte DD/MM/AAAA para AAAA-MM-DD
         if (preg_match('/^(\d{2})\/(\d{2})\/(\d{4})$/', $date, $matches)) {
-            return "{$matches[3]}-{$matches[2]}-{$matches[1]}";
+            $day = $matches[1];
+            $month = $matches[2];
+            $year = $matches[3];
+
+            // Valida a data
+            if (!checkdate($month, $day, $year)) {
+                error_log('WC Zoop Recorrência: Data inválida em convert_date_format: ' . $date);
+                return '';
+            }
+
+            return sprintf('%04d-%02d-%02d', $year, $month, $day);
         }
-        return $date;
+        error_log('WC Zoop Recorrência: Formato de data inválido em convert_date_format: ' . $date);
+        return '';
     }
 
     private function convert_datetime_format($datetime) {
         // Converte DD/MM/AAAA HH:MM para AAAA-MM-DD 00:00:00+00:00
         if (preg_match('/^(\d{2})\/(\d{2})\/(\d{4})\s(\d{2}):(\d{2})$/', $datetime, $matches)) {
-            return "{$matches[3]}-{$matches[2]}-{$matches[1]} 00:00:00+00:00";
+            $day = $matches[1];
+            $month = $matches[2];
+            $year = $matches[3];
+
+            // Valida a data
+            if (!checkdate($month, $day, $year)) {
+                error_log('WC Zoop Recorrência: Data inválida em convert_datetime_format: ' . $datetime);
+                return '';
+            }
+
+            return sprintf('%04d-%02d-%02d 00:00:00+00:00', $year, $month, $day);
         }
-        return $datetime;
+        error_log('WC Zoop Recorrência: Formato de data/hora inválido em convert_datetime_format: ' . $datetime);
+        return '';
     }
 }
 ?>

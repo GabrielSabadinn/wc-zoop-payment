@@ -3,7 +3,7 @@
 Plugin Name: WooCommerce Zoop Payment Gateway
 Description: Custom payment gateways for Zoop (Credit Card, PIX, Recurrence)
 Version: 1.0.0
-Author: Your Name
+Author: Gabriel Sabadin
 Text Domain: wc-zoop-payments
 */
 
