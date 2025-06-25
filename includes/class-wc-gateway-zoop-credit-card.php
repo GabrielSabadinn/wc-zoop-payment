@@ -211,6 +211,15 @@ class WC_Gateway_Zoop_Credit_Card extends WC_Payment_Gateway {
                     <option value="1"><?php _e('1x sem juros', 'wc-zoop-payments'); ?></option>
                     <option value="2"><?php _e('2x sem juros', 'wc-zoop-payments'); ?></option>
                     <option value="3"><?php _e('3x sem juros', 'wc-zoop-payments'); ?></option>
+                    <option value="4"><?php _e('4x sem juros', 'wc-zoop-payments'); ?></option>
+                    <option value="5"><?php _e('5x sem juros', 'wc-zoop-payments'); ?></option>
+                    <option value="6"><?php _e('6x sem juros', 'wc-zoop-payments'); ?></option>
+                    <option value="7"><?php _e('7x sem juros', 'wc-zoop-payments'); ?></option>
+                    <option value="8"><?php _e('8x sem juros', 'wc-zoop-payments'); ?></option>
+                    <option value="9"><?php _e('9x sem juros', 'wc-zoop-payments'); ?></option>
+                    <option value="10"><?php _e('10x sem juros', 'wc-zoop-payments'); ?></option>
+                    <option value="11"><?php _e('11x sem juros', 'wc-zoop-payments'); ?></option>
+                    <option value="12"><?php _e('12x sem juros', 'wc-zoop-payments'); ?></option>
                 </select>
             </div>
             <div class="form-row">
@@ -235,7 +244,7 @@ class WC_Gateway_Zoop_Credit_Card extends WC_Payment_Gateway {
         }
         error_log('WC Zoop Cartão de Crédito: Total do pedido: ' . $order->get_total());
 
-        // Validar campos do formulário
+     
         $required_fields = ['card_holder_name', 'card_number', 'card_expiry_month', 'card_expiry_year', 'card_security_code', 'number_installments', 'enderCEP'];
         foreach ($required_fields as $field) {
             if (!isset($_POST[$field]) || empty($_POST[$field])) {
@@ -324,7 +333,7 @@ class WC_Gateway_Zoop_Credit_Card extends WC_Payment_Gateway {
             WC()->cart->empty_cart();
             if (defined('WP_DEBUG') && WP_DEBUG) {
                 wc_add_notice(__('Pagamento Bem-Sucedido. ID do Pedido: ', 'wc-zoop-payments') . $order_id . '. <a href="' . esc_url($this->get_return_url($order)) . '">Clique aqui para ver os detalhes do pedido.</a>', 'success');
-                return; // Permanece na página de checkout para mostrar JSON
+                return; 
             } else {
                 return [
                     'result' => 'success',

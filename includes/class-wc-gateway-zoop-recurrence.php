@@ -369,8 +369,6 @@ class WC_Gateway_Zoop_Recurrence extends WC_Payment_Gateway {
                     <option value="daily"><?php _e('Diária', 'wc-zoop-payments'); ?></option>
                     <option value="weekly"><?php _e('Semanal', 'wc-zoop-payments'); ?></option>
                     <option value="monthly"><?php _e('Mensal', 'wc-zoop-payments'); ?></option>
-                    <option value="quarterly"><?php _e('Trimestral', 'wc-zoop-payments'); ?></option>
-                    <option value="semiannually"><?php _e('Semestral', 'wc-zoop-payments'); ?></option>
                     <option value="annually"><?php _e('Anual', 'wc-zoop-payments'); ?></option>
                 </select>
             </div>
@@ -400,7 +398,7 @@ class WC_Gateway_Zoop_Recurrence extends WC_Payment_Gateway {
             }
             error_log('WC Zoop Recorrência: Total do pedido: ' . $order->get_total());
 
-            // Validar apenas a presença dos campos obrigatórios
+         
             $required_fields = [
                 'card_holder_name_recurrence',
                 'card_number_recurrence',
@@ -436,7 +434,7 @@ class WC_Gateway_Zoop_Recurrence extends WC_Payment_Gateway {
 
             $amount_in_cents = floatval($order->get_total()) * 100;
             $due_date = $this->convert_date_format(sanitize_text_field($_POST['due_date_recurrence']));
-            $expiration_date = sanitize_text_field($_POST['expiration_date_recurrence']); // Enviar raw, sem validação
+            $expiration_date = sanitize_text_field($_POST['expiration_date_recurrence']);
             $birthdate = $this->convert_date_format(sanitize_text_field($_POST['birthdate_recurrence']));
             $taxpayer_id = str_replace(['.', '-'], '', sanitize_text_field($_POST['taxpayer_id_recurrence']));
             $phone_number = str_replace(['(', ')', '-', ' '], '', sanitize_text_field($_POST['phone_number_recurrence']));
@@ -575,7 +573,7 @@ class WC_Gateway_Zoop_Recurrence extends WC_Payment_Gateway {
             return sprintf('%04d-%02d-%02d', $matches[3], $matches[2], $matches[1]);
         }
         error_log('WC Zoop Recorrência: Formato de data inválido: ' . $date);
-        return $date; // Enviar raw se não for válido
+        return $date;
     }
 }
 ?>
