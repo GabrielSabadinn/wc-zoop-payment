@@ -1,41 +1,41 @@
 <?php
 if (!defined('ABSPATH')) {
-    error_log('WC Hubmais-payment Cartão de Crédito: ABSPATH não definido, encerrando');
+    error_log('WC Gabriel-Sabadin-payment Cartão de Crédito: ABSPATH não definido, encerrando');
     exit;
 }
 
 class WC_Gateway_Zoop_Credit_Card extends WC_Payment_Gateway {
     public function __construct() {
-        error_log('WC  Hubmais-payment Cartão de Crédito: Entrando no construtor');
+        error_log('WC Gabriel-Sabadin-payment Cartão de Crédito: Entrando no construtor');
         $this->id = 'zoop_credit_card';
-        $this->method_title = __('Cartão de Crédito  Hubmais-payment', 'wc-zoop-payments');
-        $this->method_description = __('Pague com cartão de crédito via API  Hubmais-payment', 'wc-zoop-payments');
+        $this->method_title = __('Cartão de Crédito Gabriel-Sabadin-payment', 'wc-zoop-payments');
+        $this->method_description = __('Pague com cartão de crédito via API Gabriel-Sabadin-payment', 'wc-zoop-payments');
         $this->title = $this->get_option('title', __('Cartão de Crédito', 'wc-zoop-payments'));
         $this->has_fields = true;
         $this->supports = ['products'];
 
-        error_log('WC  Hubmais-payment Cartão de Crédito: ID do gateway: ' . $this->id);
-        error_log('WC  Hubmais-payment Cartão de Crédito: Título: ' . $this->title);
-        error_log('WC  Hubmais-payment Cartão de Crédito: Possui campos: ' . ($this->has_fields ? 'true' : 'false'));
+        error_log('WC Gabriel-Sabadin-payment Cartão de Crédito: ID do gateway: ' . $this->id);
+        error_log('WC Gabriel-Sabadin-payment Cartão de Crédito: Título: ' . $this->title);
+        error_log('WC Gabriel-Sabadin-payment Cartão de Crédito: Possui campos: ' . ($this->has_fields ? 'true' : 'false'));
 
         $this->init_form_fields();
-        error_log('WC  Hubmais-payment Cartão de Crédito: Campos de formulário inicializados');
+        error_log('WC Gabriel-Sabadin-payment Cartão de Crédito: Campos de formulário inicializados');
 
         $this->init_settings();
-        error_log('WC  Hubmais-payment Cartão de Crédito: Configurações inicializadas');
+        error_log('WC Gabriel-Sabadin-payment Cartão de Crédito: Configurações inicializadas');
 
         $this->enabled = $this->get_option('enabled', 'yes');
-        $this->description = $this->get_option('description', __('Pague com cartão de crédito via nossa API Hubmais-payment segura', 'wc-zoop-payments'));
-        error_log('WC  Hubmais-payment Cartão de Crédito: Habilitado: ' . $this->enabled);
-        error_log('WC  Hubmais-payment Cartão de Crédito: Descrição: ' . $this->description);
+        $this->description = $this->get_option('description', __('Pague com cartão de crédito via nossa API Gabriel-Sabadin-payment segura', 'wc-zoop-payments'));
+        error_log('WC Gabriel-Sabadin-payment Cartão de Crédito: Habilitado: ' . $this->enabled);
+        error_log('WC Gabriel-Sabadin-payment Cartão de Crédito: Descrição: ' . $this->description);
 
         add_action('woocommerce_update_options_payment_gateways_' . $this->id, [$this, 'process_admin_options']);
         add_action('wp_footer', [$this, 'add_payment_scripts']);
-        error_log('WC Hubmais-payment Cartão de Crédito: Ações registradas');
+        error_log('WC Gabriel-Sabadin-payment Cartão de Crédito: Ações registradas');
     }
 
     public function init_form_fields() {
-        error_log('WC  Hubmais-payment Cartão de Crédito: Inicializando campos de formulário');
+        error_log('WC Gabriel-Sabadin-payment Cartão de Crédito: Inicializando campos de formulário');
         $this->form_fields = [
             'enabled' => [
                 'title' => __('Ativar/Desativar', 'wc-zoop-payments'),
@@ -56,17 +56,17 @@ class WC_Gateway_Zoop_Credit_Card extends WC_Payment_Gateway {
                 'default' => __('Pague com cartão de crédito via nossa API Zoop segura', 'wc-zoop-payments')
             ]
         ];
-        error_log('WC  Hubmais-payment Cartão de Crédito: Campos de formulário definidos: ' . print_r($this->form_fields, true));
+        error_log('WC Gabriel-Sabadin-payment Cartão de Crédito: Campos de formulário definidos: ' . print_r($this->form_fields, true));
     }
 
     public function add_payment_scripts() {
-        error_log('WC  Hubmais-payment Cartão de Crédito: Verificando se está na página de checkout');
-        error_log('WC  Hubmais-payment Cartão de Crédito: Resultado de is_checkout(): ' . (is_checkout() ? 'true' : 'false'));
+        error_log('WC Gabriel-Sabadin-payment Cartão de Crédito: Verificando se está na página de checkout');
+        error_log('WC Gabriel-Sabadin-payment Cartão de Crédito: Resultado de is_checkout(): ' . (is_checkout() ? 'true' : 'false'));
         if (!is_checkout()) {
-            error_log('WC  Hubmais-payment Cartão de Crédito: Não está na página de checkout, ignorando scripts');
+            error_log('WC Gabriel-Sabadin-payment Cartão de Crédito: Não está na página de checkout, ignorando scripts');
             return;
         }
-        error_log('WC  Hubmais-payment Cartão de Crédito: Adicionando scripts ao checkout');
+        error_log('WC Gabriel-Sabadin-payment Cartão de Crédito: Adicionando scripts ao checkout');
         ?>
         <style>
             #zoop-credit-card-form .form-row {
@@ -93,9 +93,9 @@ class WC_Gateway_Zoop_Credit_Card extends WC_Payment_Gateway {
             }
         </style>
         <script>
-            console.log('WC  Hubmais-payment Cartão de Crédito: JavaScript carregado na página de checkout');
+            console.log('WC Gabriel-Sabadin-payment Cartão de Crédito: JavaScript carregado na página de checkout');
             jQuery(document).ready(function($) {
-                console.log('WC  Hubmais-payment Cartão de Crédito: jQuery pronto, inicializando manipuladores de formulário');
+                console.log('WC Gabriel-Sabadin-payment Cartão de Crédito: jQuery pronto, inicializando manipuladores de formulário');
                 const cardNumber = $('#card_number');
                 const expiryMonth = $('#card_expiry_month');
                 const expiryYear = $('#card_expiry_year');
@@ -103,36 +103,36 @@ class WC_Gateway_Zoop_Credit_Card extends WC_Payment_Gateway {
                 const cep = $('#enderCEP');
 
                 if (cardNumber.length) {
-                    console.log('WC  Hubmais-payment Cartão de Crédito: Campo de número do cartão encontrado');
+                    console.log('WC Gabriel-Sabadin-payment Cartão de Crédito: Campo de número do cartão encontrado');
                     cardNumber.on('input', function() {
                         let value = $(this).val().replace(/\D/g, '');
                         value = value.replace(/(\d{4})/g, '$1 ').trim();
                         $(this).val(value);
-                        console.log('WC  Hubmais-payment Cartão de Crédito: Entrada do número do cartão: ' + value);
+                        console.log('WC Gabriel-Sabadin-payment Cartão de Crédito: Entrada do número do cartão: ' + value);
                     });
                 } else {
-                    console.log('WC  Hubmais-payment Cartão de Crédito: Campo de número do cartão NÃO encontrado');
+                    console.log('WC Gabriel-Sabadin-payment Cartão de Crédito: Campo de número do cartão NÃO encontrado');
                 }
 
                 expiryMonth.on('input', function() {
                     let value = $(this).val().replace(/\D/g, '');
                     if (value.length > 2) value = value.slice(0, 2);
                     $(this).val(value);
-                    console.log('WC  Hubmais-payment Cartão de Crédito: Entrada do mês de expiração: ' + value);
+                    console.log('WC Gabriel-Sabadin-payment Cartão de Crédito: Entrada do mês de expiração: ' + value);
                 });
 
                 expiryYear.on('input', function() {
                     let value = $(this).val().replace(/\D/g, '');
                     if (value.length > 4) value = value.slice(0, 4);
                     $(this).val(value);
-                    console.log('WC  Hubmais-payment Cartão de Crédito: Entrada do ano de expiração: ' + value);
+                    console.log('WC Gabriel-Sabadin-payment Cartão de Crédito: Entrada do ano de expiração: ' + value);
                 });
 
                 securityCode.on('input', function() {
                     let value = $(this).val().replace(/\D/g, '');
                     if (value.length > 4) value = value.slice(0, 4);
                     $(this).val(value);
-                    console.log('WC  Hubmais-paymentoop Cartão de Crédito: Entrada do CVV: ' + value);
+                    console.log('WC Gabriel-Sabadin-payment Cartão de Crédito: Entrada do CVV: ' + value);
                 });
 
                 cep.on('input', function() {
@@ -141,10 +141,10 @@ class WC_Gateway_Zoop_Credit_Card extends WC_Payment_Gateway {
                         value = value.slice(0, 5) + '-' + value.slice(5, 8);
                     }
                     $(this).val(value);
-                    console.log('WC  Hubmais-payment Cartão de Crédito: Entrada do CEP: ' + value);
+                    console.log('WC Gabriel-Sabadin-payment Cartão de Crédito: Entrada do CEP: ' + value);
                 });
 
-                console.log('WC  Hubmais-payment Cartão de Crédito: Adicionando campos ocultos de dispositivo');
+                console.log('WC Gabriel-Sabadin-payment Cartão de Crédito: Adicionando campos ocultos de dispositivo');
                 $('<input>').attr({
                     type: 'hidden',
                     name: 'device_color_depth',
@@ -170,16 +170,16 @@ class WC_Gateway_Zoop_Credit_Card extends WC_Payment_Gateway {
                     name: 'device_time_zone',
                     value: new Date().getTimezoneOffset()
                 }).appendTo('#zoop-credit-card-form');
-                console.log('WC  Hubmais-payment Cartão de Crédito: Campos ocultos de dispositivo adicionados');
+                console.log('WC Gabriel-Sabadin-payment Cartão de Crédito: Campos ocultos de dispositivo adicionados');
             });
         </script>
         <?php
     }
 
     public function payment_fields() {
-        error_log('WC  Hubmais-payment Cartão de Crédito: Renderizando campos de pagamento');
-        error_log('WC  Hubmais-payment Cartão de Crédito: ID da página atual: ' . get_the_ID());
-        error_log('WC  Hubmais-payment Cartão de Crédito: É página de checkout: ' . (is_checkout() ? 'true' : 'false'));
+        error_log('WC Gabriel-Sabadin-payment Cartão de Crédito: Renderizando campos de pagamento');
+        error_log('WC Gabriel-Sabadin-payment Cartão de Crédito: ID da página atual: ' . get_the_ID());
+        error_log('WC Gabriel-Sabadin-payment Cartão de Crédito: É página de checkout: ' . (is_checkout() ? 'true' : 'false'));
         ?>
         <div id="zoop-credit-card-form">
             <p><?php echo esc_html($this->description); ?></p>
@@ -228,33 +228,41 @@ class WC_Gateway_Zoop_Credit_Card extends WC_Payment_Gateway {
             </div>
         </div>
         <?php
-        error_log('WC  Hubmais-payment Cartão de Crédito: Campos de pagamento renderizados');
+        error_log('WC Gabriel-Sabadin-payment Cartão de Crédito: Campos de pagamento renderizados');
     }
 
     public function process_payment($order_id) {
-        error_log('WC  Hubmais-payment Cartão de Crédito: Processando pagamento para o pedido #' . $order_id);
-        error_log('WC  Hubmais-payment Cartão de Crédito: URL atual: ' . esc_url_raw($_SERVER['REQUEST_URI']));
-        error_log('WC  Hubmais-payment Cartão de Crédito: Dados POST recebidos: ' . print_r($_POST, true));
+        error_log('WC Gabriel-Sabadin-payment Cartão de Crédito: Processando pagamento para o pedido #' . $order_id);
+        error_log('WC Gabriel-Sabadin-payment Cartão de Crédito: URL atual: ' . esc_url_raw($_SERVER['REQUEST_URI']));
+        error_log('WC Gabriel-Sabadin-payment Cartão de Crédito: Dados POST recebidos: ' . print_r($_POST, true));
 
         $order = wc_get_order($order_id);
         if (!$order) {
-            error_log('WC  Hubmais-payment Cartão de Crédito: Pedido #' . $order_id . ' não encontrado');
+            error_log('WC Gabriel-Sabadin-payment Cartão de Crédito: Pedido #' . $order_id . ' não encontrado');
             wc_add_notice(__('Erro: Pedido não encontrado.', 'wc-zoop-payments'), 'error');
             return;
         }
-        error_log('WC  Hubmais-payment Cartão de Crédito: Total do pedido: ' . $order->get_total());
+        error_log('WC Gabriel-Sabadin-payment Cartão de Crédito: Total do pedido: ' . $order->get_total());
 
-     
         $required_fields = ['card_holder_name', 'card_number', 'card_expiry_month', 'card_expiry_year', 'card_security_code', 'number_installments', 'enderCEP'];
         foreach ($required_fields as $field) {
             if (!isset($_POST[$field]) || empty($_POST[$field])) {
-                error_log('WC  Hubmais-payment Cartão de Crédito: Campo ausente ou vazio: ' . $field);
+                error_log('WC Gabriel-Sabadin-payment Cartão de Crédito: Campo ausente ou vazio: ' . $field);
                 wc_add_notice(__('Erro: Por favor, preencha todos os campos obrigatórios.', 'wc-zoop-payments'), 'error');
                 return;
             }
         }
 
+        $seller_id = get_option('wc_zoop_seller_id', '');
+        error_log('WC Gabriel-Sabadin-payment Cartão de Crédito: Seller ID: ' . ($seller_id ? $seller_id : 'Não configurado'));
+        if (empty($seller_id)) {
+            error_log('WC Gabriel-Sabadin-payment Cartão de Crédito: Seller ID não configurado');
+            wc_add_notice(__('Erro: Seller ID não configurado. Por favor, contate o administrador.', 'wc-zoop-payments'), 'error');
+            return;
+        }
+
         $payload = [
+            'seller_id' => $seller_id,
             'amount' => floatval($order->get_total()),
             'description' => 'Compra para o pedido #' . $order_id,
             'number_installments' => intval($_POST['number_installments']),
@@ -279,7 +287,7 @@ class WC_Gateway_Zoop_Credit_Card extends WC_Payment_Gateway {
             ]
         ];
 
-        error_log('WC  Hubmais-payment Cartão de Crédito: Payload preparado: ' . json_encode($payload, JSON_PRETTY_PRINT));
+        error_log('WC Gabriel-Sabadin-payment Cartão de Crédito: Payload preparado: ' . json_encode($payload, JSON_PRETTY_PRINT));
         if (defined('WP_DEBUG') && WP_DEBUG) {
             wc_add_notice(__('Payload da Requisição API: ', 'wc-zoop-payments') . '<pre>' . esc_html(json_encode($payload, JSON_PRETTY_PRINT)) . '</pre>', 'notice');
         }
@@ -292,11 +300,11 @@ class WC_Gateway_Zoop_Credit_Card extends WC_Payment_Gateway {
             'timeout' => 30
         ]);
 
-        error_log('WC  Hubmais-payment Cartão de Crédito: Requisição API enviada para http://localhost:9099/api/transactions');
+        error_log('WC Gabriel-Sabadin-payment Cartão de Crédito: Requisição API enviada para http://localhost:9099/api/transactions');
 
         if (is_wp_error($response)) {
             $error_message = $response->get_error_message();
-            error_log('WC  Hubmais-payment Cartão de Crédito: Erro WP na API: ' . $error_message);
+            error_log('WC Gabriel-Sabadin-payment Cartão de Crédito: Erro WP na API: ' . $error_message);
             if (defined('WP_DEBUG') && WP_DEBUG) {
                 wc_add_notice(__('Erro na Resposta da API: ', 'wc-zoop-payments') . esc_html($error_message), 'error');
             } else {
@@ -307,8 +315,8 @@ class WC_Gateway_Zoop_Credit_Card extends WC_Payment_Gateway {
 
         $response_code = wp_remote_retrieve_response_code($response);
         $response_body = wp_remote_retrieve_body($response);
-        error_log('WC  Hubmais-payment Cartão de Crédito: Código de resposta da API: ' . $response_code);
-        error_log('WC  Hubmais-payment Cartão de Crédito: Corpo da resposta da API: ' . $response_body);
+        error_log('WC Gabriel-Sabadin-payment Cartão de Crédito: Código de resposta da API: ' . $response_code);
+        error_log('WC Gabriel-Sabadin-payment Cartão de Crédito: Corpo da resposta da API: ' . $response_body);
 
         if (defined('WP_DEBUG') && WP_DEBUG) {
             wc_add_notice(__('Resposta da API: ', 'wc-zoop-payments') . '<pre>' . esc_html($response_body) . '</pre>', 'notice');
@@ -316,7 +324,7 @@ class WC_Gateway_Zoop_Credit_Card extends WC_Payment_Gateway {
 
         $body = json_decode($response_body, true);
         if (json_last_error() !== JSON_ERROR_NONE) {
-            error_log('WC  Hubmais-payment Cartão de Crédito: Erro ao decodificar JSON: ' . json_last_error_msg());
+            error_log('WC Gabriel-Sabadin-payment Cartão de Crédito: Erro ao decodificar JSON: ' . json_last_error_msg());
             if (defined('WP_DEBUG') && WP_DEBUG) {
                 wc_add_notice(__('Erro na Resposta da API: JSON inválido. Resposta bruta: ', 'wc-zoop-payments') . esc_html($response_body), 'error');
             } else {
@@ -326,14 +334,14 @@ class WC_Gateway_Zoop_Credit_Card extends WC_Payment_Gateway {
         }
 
         if ($response_code == 201 && isset($body['ExResponse']['id'])) {
-            error_log('WC  Hubmais-payment Cartão de Crédito: Pagamento aprovado para o pedido #' . $order_id . ' com ID do token: ' . $body['ExResponse']['id']);
+            error_log('WC Gabriel-Sabadin-payment Cartão de Crédito: Pagamento aprovado para o pedido #' . $order_id . ' com ID do token: ' . $body['ExResponse']['id']);
             $order->payment_complete($body['ExResponse']['id']);
-            $order->add_order_note('Pagamento aprovado via  Hubmais-payment. ID do token: ' . $body['ExResponse']['id']);
+            $order->add_order_note('Pagamento aprovado via Gabriel-Sabadin-payment. ID do token: ' . $body['ExResponse']['id']);
             wc_reduce_stock_levels($order_id);
             WC()->cart->empty_cart();
             if (defined('WP_DEBUG') && WP_DEBUG) {
                 wc_add_notice(__('Pagamento Bem-Sucedido. ID do Pedido: ', 'wc-zoop-payments') . $order_id . '. <a href="' . esc_url($this->get_return_url($order)) . '">Clique aqui para ver os detalhes do pedido.</a>', 'success');
-                return; 
+                return;
             } else {
                 return [
                     'result' => 'success',
@@ -352,3 +360,4 @@ class WC_Gateway_Zoop_Credit_Card extends WC_Payment_Gateway {
         }
     }
 }
+?>

@@ -1,45 +1,45 @@
 <?php
 if (!defined('ABSPATH')) {
-    error_log('WC  Hubmais-payment Recorrência: ABSPATH não carregado, encerrando');
+    error_log('WC Gabriel-Sabadin-payment Recorrência: ABSPATH não carregado, encerrando');
     exit;
 }
 
 class WC_Gateway_Zoop_Recurrence extends WC_Payment_Gateway {
     public function __construct() {
-        error_log('WC  Hubmais-payment Recorrência: Entrando no construtor');
+        error_log('WC Gabriel-Sabadin-payment Recorrência: Entrando no construtor');
         $this->id = 'zoop_recurrence';
-        $this->method_title = __('Recorrência  Hubmais-payment', 'wc-zoop-payments');
-        $this->method_description = __('Pague com cartão de crédito recorrente via API  Hubmais-payment', 'wc-zoop-payments');
+        $this->method_title = __('Recorrência Gabriel-Sabadin-payment', 'wc-zoop-payments');
+        $this->method_description = __('Pague com cartão de crédito recorrente via API Gabriel-Sabadin-payment', 'wc-zoop-payments');
         $this->title = $this->get_option('title', __('Pagamento Recorrente', 'wc-zoop-payments'));
         $this->has_fields = true;
         $this->supports = ['products', 'subscriptions'];
 
-        error_log('WC  Hubmais-payment Recorrência: ID do gateway: ' . $this->id);
-        error_log('WC  Hubmais-payment Recorrência: Título: ' . $this->title);
+        error_log('WC Gabriel-Sabadin-payment Recorrência: ID do gateway: ' . $this->id);
+        error_log('WC Gabriel-Sabadin-payment Recorrência: Título: ' . $this->title);
 
         $this->init_form_fields();
-        error_log('WC  Hubmais-payment Recorrência: Campos de formulário inicializados');
+        error_log('WC Gabriel-Sabadin-payment Recorrência: Campos de formulário inicializados');
 
         $this->init_settings();
-        error_log('WC  Hubmais-payment Recorrência: Configurações inicializadas');
+        error_log('WC Gabriel-Sabadin-payment Recorrência: Configurações inicializadas');
 
         $this->enabled = $this->get_option('enabled', 'yes');
-        $this->description = $this->get_option('description', __('Configure um pagamento recorrente com cartão de crédito via API Zoop segura', 'wc-zoop-payments'));
-        error_log('WC  Hubmais-payment Recorrência: Habilitado: ' . $this->enabled);
+        $this->description = $this->get_option('description', __('Configure um pagamento recorrente com cartão de crédito via API Gabriel-Sabadin segura', 'wc-zoop-payments'));
+        error_log('WC Gabriel-Sabadin-payment Recorrência: Habilitado: ' . $this->enabled);
 
         add_action('woocommerce_update_options_payment_gateways_' . $this->id, [$this, 'process_admin_options']);
         add_action('wp_footer', [$this, 'add_payment_scripts']);
-        error_log('WC  Hubmais-payment Recorrência: Ações registradas');
+        error_log('WC Gabriel-Sabadin-payment Recorrência: Ações registradas');
     }
 
     public function is_available() {
         $is_available = parent::is_available();
-        error_log('WC  Hubmais-payment Recorrência: Gateway disponível? ' . ($is_available ? 'Sim' : 'Não'));
+        error_log('WC Gabriel-Sabadin-payment Recorrência: Gateway disponível? ' . ($is_available ? 'Sim' : 'Não'));
         return $is_available;
     }
 
     public function init_form_fields() {
-        error_log('WC  Hubmais-payment Recorrência: Inicializando campos de formulário');
+        error_log('WC Gabriel-Sabadin-payment Recorrência: Inicializando campos de formulário');
         $this->form_fields = [
             'enabled' => [
                 'title' => __('Ativar/Desativar', 'wc-zoop-payments'),
@@ -57,25 +57,19 @@ class WC_Gateway_Zoop_Recurrence extends WC_Payment_Gateway {
                 'title' => __('Descrição', 'wc-zoop-payments'),
                 'type' => 'textarea',
                 'description' => __('Descrição exibida no checkout', 'wc-zoop-payments'),
-                'default' => __('Configure um pagamento recorrente com cartão de crédito via API  Hubmais-payment segura', 'wc-zoop-payments')
-            ],
-            'api_key' => [
-                'title' => __('Chave API', 'wc-zoop-payments'),
-                'type' => 'text',
-                'description' => __('Insira a chave API fornecida pela  Hubmais-payment', 'wc-zoop-payments'),
-                'default' => ''
+                'default' => __('Configure um pagamento recorrente com cartão de crédito via API Gabriel-Sabadin segura', 'wc-zoop-payments')
             ]
         ];
-        error_log('WC Zoop Recorrência: Campos de formulário definidos');
+        error_log('WC Gabriel-Sabadin-payment Recorrência: Campos de formulário definidos');
     }
 
     public function add_payment_scripts() {
-        error_log('WC  Hubmais-payment Recorrência: Verificando se está na página de checkout');
+        error_log('WC Gabriel-Sabadin-payment Recorrência: Verificando se está na página de checkout');
         if (!is_checkout() || WC()->session->get('chosen_payment_method') !== $this->id) {
-            error_log('WC  Hubmais-payment Recorrência: Não está na página de checkout ou gateway não selecionado, ignorando scripts');
+            error_log('WC Gabriel-Sabadin-payment Recorrência: Não está na página de checkout ou gateway não selecionado, ignorando scripts');
             return;
         }
-        error_log('WC  Hubmais-payment Recorrência: Adicionando scripts ao checkout');
+        error_log('WC Gabriel-Sabadin-payment Recorrência: Adicionando scripts ao checkout');
         ?>
         <style>
             #zoop-recurrence-form .form-row {
@@ -102,9 +96,9 @@ class WC_Gateway_Zoop_Recurrence extends WC_Payment_Gateway {
             }
         </style>
         <script>
-            console.log('WC  Hubmais-payment Recorrência: JavaScript carregado na página de checkout');
+            console.log('WC Gabriel-Sabadin-payment Recorrência: JavaScript carregado na página de checkout');
             jQuery(document).ready(function($) {
-                console.log('WC  Hubmais-payment Recorrência: jQuery pronto, inicializando manipuladores');
+                console.log('WC Gabriel-Sabadin-payment Recorrência: jQuery pronto, inicializando manipuladores');
                 const cardNumber = $('#card_number_recurrence');
                 const expiryMonth = $('#card_expiry_month_recurrence');
                 const expiryYear = $('#card_expiry_year_recurrence');
@@ -118,14 +112,14 @@ class WC_Gateway_Zoop_Recurrence extends WC_Payment_Gateway {
                 const planName = $('#plan_name_recurrence');
 
                 if (cardNumber.length) {
-                    console.log('WC  Hubmais-payment Recorrência: Campo de número do cartão encontrado');
+                    console.log('WC Gabriel-Sabadin-payment Recorrência: Campo de número do cartão encontrado');
                     cardNumber.on('input', function() {
                         let value = $(this).val().replace(/\D/g, '');
                         value = value.replace(/(\d{4})/g, '$1 ').trim();
                         $(this).val(value);
                     });
                 } else {
-                    console.log('WC  Hubmais-payment Recorrência: Campo de número do cartão NÃO encontrado');
+                    console.log('WC Gabriel-Sabadin-payment Recorrência: Campo de número do cartão NÃO encontrado');
                 }
 
                 expiryMonth.on('input', function() {
@@ -199,7 +193,7 @@ class WC_Gateway_Zoop_Recurrence extends WC_Payment_Gateway {
                     $(this).val(value);
                 });
 
-                console.log('WC Zoop Recorrência: Adicionando campos ocultos de dispositivo');
+                console.log('WC Gabriel-Sabadin-payment Recorrência: Adicionando campos ocultos de dispositivo');
                 $('<input>').attr({
                     type: 'hidden',
                     name: 'device_color_depth_recurrence',
@@ -225,14 +219,14 @@ class WC_Gateway_Zoop_Recurrence extends WC_Payment_Gateway {
                     name: 'device_time_zone_recurrence',
                     value: new Date().getTimezoneOffset()
                 }).appendTo('#zoop-recurrence-form');
-                console.log('WC  Hubmais-payment Recorrência: Campos ocultos de dispositivo adicionados');
+                console.log('WC Gabriel-Sabadin-payment Recorrência: Campos ocultos de dispositivo adicionados');
             });
         </script>
         <?php
     }
 
     public function payment_fields() {
-        error_log('WC  Hubmais-payment Recorrência: Renderizando campos de pagamento');
+        error_log('WC Gabriel-Sabadin-payment Recorrência: Renderizando campos de pagamento');
         ?>
         <div id="zoop-recurrence-form">
             <p><?php echo esc_html($this->description); ?></p>
@@ -382,23 +376,31 @@ class WC_Gateway_Zoop_Recurrence extends WC_Payment_Gateway {
             </div>
         </div>
         <?php
-        error_log('WC Zoop Recorrência: Campos de pagamento renderizados');
+        error_log('WC Gabriel-Sabadin-payment Recorrência: Campos de pagamento renderizados');
     }
 
     public function process_payment($order_id) {
-        error_log('WC  Hubmais-payment Recorrência: Processando pagamento para o pedido #' . $order_id);
-        error_log('WC  Hubmais-payment Recorrência: Dados POST recebidos: ' . print_r($_POST, true));
+        error_log('WC Gabriel-Sabadin-payment Recorrência: Processando pagamento para o pedido #' . $order_id);
+        error_log('WC Gabriel-Sabadin-payment Recorrência: Dados POST recebidos: ' . print_r($_POST, true));
 
         try {
             $order = wc_get_order($order_id);
             if (!$order) {
-                error_log('WC  Hubmais-payment Recorrência: Pedido #' . $order_id . ' não encontrado');
+                error_log('WC Gabriel-Sabadin-payment Recorrência: Pedido #' . $order_id . ' não encontrado');
                 wc_add_notice(__('Erro: Pedido não encontrado.', 'wc-zoop-payments'), 'error');
                 return;
             }
-            error_log('WC  Hubmais-payment Recorrência: Total do pedido: ' . $order->get_total());
+            error_log('WC Gabriel-Sabadin-payment Recorrência: Total do pedido: ' . $order->get_total());
 
-         
+            // Retrieve seller_id from global settings
+            $seller_id = get_option('wc_zoop_seller_id', '');
+            error_log('WC Gabriel-Sabadin-payment Recorrência: Seller ID retrieved: ' . ($seller_id ? $seller_id : 'Não configurado'));
+            if (empty($seller_id)) {
+                error_log('WC Gabriel-Sabadin-payment Recorrência: Seller ID não configurado');
+                wc_add_notice(__('Erro: Seller ID não configurado. Por favor, configure na aba Gabriel-Sabadin Settings.', 'wc-zoop-payments'), 'error');
+                return;
+            }
+
             $required_fields = [
                 'card_holder_name_recurrence',
                 'card_number_recurrence',
@@ -426,7 +428,7 @@ class WC_Gateway_Zoop_Recurrence extends WC_Payment_Gateway {
 
             foreach ($required_fields as $field) {
                 if (!isset($_POST[$field]) || empty(trim($_POST[$field]))) {
-                    error_log('WC  Hubmais-payment Recorrência: Campo ausente ou vazio: ' . $field);
+                    error_log('WC Gabriel-Sabadin-payment Recorrência: Campo ausente ou vazio: ' . $field);
                     wc_add_notice(__('Erro: Por favor, preencha todos os campos obrigatórios.', 'wc-zoop-payments'), 'error');
                     return;
                 }
@@ -440,9 +442,10 @@ class WC_Gateway_Zoop_Recurrence extends WC_Payment_Gateway {
             $phone_number = str_replace(['(', ')', '-', ' '], '', sanitize_text_field($_POST['phone_number_recurrence']));
             $cep = str_replace('-', '', sanitize_text_field($_POST['enderCEP_recurrence']));
 
-            error_log('WC Zoop Recorrência: expiration_date enviado raw: ' . $expiration_date);
+            error_log('WC Gabriel-Sabadin-payment Recorrência: expiration_date enviado raw: ' . $expiration_date);
 
             $payload = [
+                'seller_id' => sanitize_text_field($seller_id),
                 'amount' => $amount_in_cents,
                 'description' => 'Pagamento recorrente para o pedido #' . $order_id,
                 'due_date' => $due_date,
@@ -490,28 +493,25 @@ class WC_Gateway_Zoop_Recurrence extends WC_Payment_Gateway {
                 ]
             ];
 
-            error_log('WC  Hubmais-payment Recorrência: Payload preparado: ' . json_encode($payload, JSON_PRETTY_PRINT));
+            error_log('WC Gabriel-Sabadin-payment Recorrência: Payload preparado: ' . json_encode($payload, JSON_PRETTY_PRINT));
             if (defined('WP_DEBUG') && WP_DEBUG) {
                 wc_add_notice(__('Payload da Requisição API: ', 'wc-zoop-payments') . '<pre>' . esc_html(json_encode($payload, JSON_PRETTY_PRINT)) . '</pre>', 'notice');
             }
 
-            $api_key = $this->get_option('api_key');
-            error_log('WC  Hubmais-payment Recorrência: API Key: ' . ($api_key ? 'Configurada' : 'Não configurada'));
             $endpoint = 'http://localhost:9099/api/transactions/recurrent';
             $response = wp_remote_post($endpoint, [
                 'body' => json_encode($payload),
                 'headers' => [
-                    'Content-Type' => 'application/json',
-                    'Authorization' => $api_key ? 'Bearer ' . $api_key : ''
+                    'Content-Type' => 'application/json'
                 ],
                 'timeout' => 30
             ]);
 
-            error_log('WC  Hubmais-payment Recorrência: Requisição API enviada para ' . $endpoint);
+            error_log('WC Gabriel-Sabadin-payment Recorrência: Requisição API enviada para ' . $endpoint);
 
             if (is_wp_error($response)) {
                 $error_message = $response->get_error_message();
-                error_log('WC  Hubmais-payment Recorrência: Erro WP na API: ' . $error_message);
+                error_log('WC Gabriel-Sabadin-payment Recorrência: Erro WP na API: ' . $error_message);
                 if (defined('WP_DEBUG') && WP_DEBUG) {
                     wc_add_notice(__('Erro na Resposta da API: ', 'wc-zoop-payments') . esc_html($error_message), 'error');
                 } else {
@@ -522,8 +522,8 @@ class WC_Gateway_Zoop_Recurrence extends WC_Payment_Gateway {
 
             $response_code = wp_remote_retrieve_response_code($response);
             $response_body = wp_remote_retrieve_body($response);
-            error_log('WC  Hubmais-payment Recorrência: Código de resposta da API: ' . $response_code);
-            error_log('WC  Hubmais-payment Recorrência: Corpo da resposta da API: ' . $response_body);
+            error_log('WC Gabriel-Sabadin-payment Recorrência: Código de resposta da API: ' . $response_code);
+            error_log('WC Gabriel-Sabadin-payment Recorrência: Corpo da resposta da API: ' . $response_body);
 
             if (defined('WP_DEBUG') && WP_DEBUG) {
                 wc_add_notice(__('Resposta da API: ', 'wc-zoop-payments') . '<pre>' . esc_html($response_body) . '</pre>', 'notice');
@@ -531,15 +531,15 @@ class WC_Gateway_Zoop_Recurrence extends WC_Payment_Gateway {
 
             $body = json_decode($response_body, true);
             if (json_last_error() !== JSON_ERROR_NONE) {
-                error_log('WC  Hubmais-payment Recorrência: Erro ao decodificar JSON: ' . json_last_error_msg());
+                error_log('WC Gabriel-Sabadin-payment Recorrência: Erro ao decodificar JSON: ' . json_last_error_msg());
                 wc_add_notice(__('Erro na Resposta da API: JSON inválido.', 'wc-zoop-payments'), 'error');
                 return;
             }
 
             if ($response_code == 201 && isset($body['id'])) {
-                error_log('WC  Hubmais-payment Recorrência: Pagamento aprovado para o pedido #' . $order_id . ' com ID: ' . $body['id']);
+                error_log('WC Gabriel-Sabadin-payment Recorrência: Pagamento aprovado para o pedido #' . $order_id . ' com ID: ' . $body['id']);
                 $order->payment_complete($body['id']);
-                $order->add_order_note('Plano recorrente iniciado via  Hubmais-payment. ID: ' . $body['id']);
+                $order->add_order_note('Plano recorrente iniciado via Gabriel-Sabadin-payment. ID: ' . $body['id'] . ', Seller ID: ' . $seller_id);
                 wc_reduce_stock_levels($order_id);
                 WC()->cart->empty_cart();
                 if (defined('WP_DEBUG') && WP_DEBUG) {
@@ -553,7 +553,7 @@ class WC_Gateway_Zoop_Recurrence extends WC_Payment_Gateway {
                 }
             } else {
                 $error_message = isset($body['error']['message']) ? $body['error']['message'] : (isset($body['errors']) ? implode(', ', $body['errors']) : __('Erro desconhecido', 'wc-zoop-payments'));
-                error_log('WC  Hubmais-payment Recorrência: Pagamento recusado: ' . $error_message);
+                error_log('WC Gabriel-Sabadin-payment Recorrência: Pagamento recusado: ' . $error_message);
                 if (defined('WP_DEBUG') && WP_DEBUG) {
                     wc_add_notice(__('Erro na Resposta da API: ', 'wc-zoop-payments') . '<pre>' . esc_html(json_encode($body, JSON_PRETTY_PRINT)) . '</pre>', 'error');
                 } else {
@@ -562,7 +562,7 @@ class WC_Gateway_Zoop_Recurrence extends WC_Payment_Gateway {
                 return;
             }
         } catch (Exception $e) {
-            error_log('WC  Hubmais-payment Recorrência: Exceção em process_payment: ' . $e->getMessage());
+            error_log('WC Gabriel-Sabadin-payment Recorrência: Exceção em process_payment: ' . $e->getMessage());
             wc_add_notice(__('Erro interno ao processar o pagamento: ', 'wc-zoop-payments') . $e->getMessage(), 'error');
             return;
         }
@@ -572,7 +572,7 @@ class WC_Gateway_Zoop_Recurrence extends WC_Payment_Gateway {
         if (preg_match('/^(\d{2})\/(\d{2})\/(\d{4})$/', $date, $matches)) {
             return sprintf('%04d-%02d-%02d', $matches[3], $matches[2], $matches[1]);
         }
-        error_log('WC  Hubmais-payment Recorrência: Formato de data inválido: ' . $date);
+        error_log('WC Gabriel-Sabadin-payment Recorrência: Formato de data inválido: ' . $date);
         return $date;
     }
 }
