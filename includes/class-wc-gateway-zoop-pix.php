@@ -1,39 +1,39 @@
 <?php
 if (!defined('ABSPATH')) {
-    error_log('WC Zoop PIX: ABSPATH não definido, encerrando');
+    error_log('WC Hubmais PIX: ABSPATH não definido, encerrando');
     exit;
 }
 
 class WC_Gateway_Zoop_PIX extends WC_Payment_Gateway {
     public function __construct() {
-        error_log('WC Zoop PIX: Entrando no construtor');
+        error_log('WC Hubmais PIX: Entrando no construtor');
         $this->id = 'zoop_pix';
-        $this->method_title = __('PIX Zoop', 'wc-zoop-payments');
+        $this->method_title = __('PIX Hubmais', 'wc-zoop-payments');
         $this->method_description = __('Pague com PIX via API Zoop', 'wc-zoop-payments');
         $this->title = $this->get_option('title', __('PIX', 'wc-zoop-payments'));
         $this->has_fields = true;
         $this->supports = ['products'];
 
-        error_log('WC Zoop PIX: ID do gateway: ' . $this->id);
-        error_log('WC Zoop PIX: Título: ' . $this->title);
+        error_log('WC Hubmais PIX: ID do gateway: ' . $this->id);
+        error_log('WC Hubmais PIX: Título: ' . $this->title);
 
         $this->init_form_fields();
-        error_log('WC Zoop PIX: Campos de formulário inicializados');
+        error_log('WC Hubmais PIX: Campos de formulário inicializados');
 
         $this->init_settings();
-        error_log('WC Zoop PIX: Configurações inicializadas');
+        error_log('WC Hubmais PIX: Configurações inicializadas');
 
         $this->enabled = $this->get_option('enabled', 'yes');
-        $this->description = $this->get_option('description', __('Pague instantaneamente com PIX via nossa API Zoop segura', 'wc-zoop-payments'));
-        error_log('WC Zoop PIX: Habilitado: ' . $this->enabled);
-        error_log('WC Zoop PIX: Descrição: ' . $this->description);
+        $this->description = $this->get_option('description', __('Pague instantaneamente com PIX via nossa API Hubmais segura', 'wc-zoop-payments'));
+        error_log('WC Hubmais PIX: Habilitado: ' . $this->enabled);
+        error_log('WC Hubmais PIX: Descrição: ' . $this->description);
 
         add_action('woocommerce_update_options_payment_gateways_' . $this->id, [$this, 'process_admin_options']);
-        error_log('WC Zoop PIX: Ações registradas');
+        error_log('WC Hubmais PIX: Ações registradas');
     }
 
     public function init_form_fields() {
-        error_log('WC Zoop PIX: Inicializando campos de formulário');
+        error_log('WC Hubmais PIX: Inicializando campos de formulário');
         $this->form_fields = [
             'enabled' => [
                 'title' => __('Ativar/Desativar', 'wc-zoop-payments'),
@@ -51,14 +51,14 @@ class WC_Gateway_Zoop_PIX extends WC_Payment_Gateway {
                 'title' => __('Descrição', 'wc-zoop-payments'),
                 'type' => 'textarea',
                 'description' => __('Descrição exibida no checkout', 'wc-zoop-payments'),
-                'default' => __('Pague instantaneamente com PIX via nossa API Zoop segura', 'wc-zoop-payments')
+                'default' => __('Pague instantaneamente com PIX via nossa API Hubmais segura', 'wc-zoop-payments')
             ]
         ];
-        error_log('WC Zoop PIX: Campos de formulário definidos: ' . print_r($this->form_fields, true));
+        error_log('WC Hubmais PIX: Campos de formulário definidos: ' . print_r($this->form_fields, true));
     }
 
     public function payment_fields() {
-        error_log('WC Zoop PIX: Renderizando campos de pagamento');
+        error_log('WC Hubmais PIX: Renderizando campos de pagamento');
         ?>
         <div id="zoop-pix-form">
             <p><?php echo esc_html($this->description); ?></p>
